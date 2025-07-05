@@ -18,3 +18,7 @@ springdoc:
   swagger-ui:
     enabled: true
     path: /doc/index.html
+
+jwt:
+  secret: "12345"
+  expiration.ms: 86400000 # 24小时

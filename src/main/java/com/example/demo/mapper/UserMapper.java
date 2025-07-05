@@ -13,4 +13,6 @@ public interface UserMapper extends BaseMapper<User> {
     int updateById(UserDTO user);
 
     int insert(QueryWrapper<UserDTO> queryWrapper);
+
+    User selectByUsername(String username);
 }
