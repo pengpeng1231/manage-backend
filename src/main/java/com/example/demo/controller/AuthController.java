@@ -19,13 +19,24 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public Result<Object> register(@RequestBody LoginDTO request) {
+    public Result<LoginDTO> register(@RequestBody LoginDTO request) {
         authService.register(request);
         return Result.ok(null, "注册成功");
     }
 
     @PostMapping("/login")
     public Result<LoginVO> login(@RequestBody LoginDTO request) {
+        return Result.ok(authService.login(request), "登录成功");
+    }
+
+    @PostMapping("/loginOrRegister")
+    public Result<LoginVO> loginOrRegister(@RequestBody LoginDTO request) {
+        boolean isRegister = authService.hasUser(request);
+
+        if (!isRegister) {
+            authService.register(request);
+        }
+
         return Result.ok(authService.login(request), "登录成功");
     }
 }

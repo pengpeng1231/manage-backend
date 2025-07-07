@@ -3,6 +3,7 @@ package com.example.demo.exception;
 import com.example.demo.utils.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,5 +28,10 @@ public class GlobalExceptionHandler {
         });
 
         return new ResponseEntity<>(Result.error(500, "参数验证失败", errors), HttpStatus.OK);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Result<Object>> handleBadCredentialsException(BadCredentialsException ex) {
+        return new ResponseEntity<>(Result.error(500, ex.getMessage()), HttpStatus.OK);
     }
 }

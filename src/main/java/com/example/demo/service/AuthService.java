@@ -13,12 +13,10 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtils jwtUtils;
 
     public AuthService(UserMapper userMapper, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
-        this.jwtUtils = jwtUtils;
     }
 
     public void register(LoginDTO request) {
@@ -42,7 +40,7 @@ public class AuthService {
             throw new BadCredentialsException("用户名或密码错误");
         }
 
-        String token = jwtUtils.generateToken(user.getUsername());
+        String token = JwtUtils.generateToken(user.getUsername());
 
         LoginVO loginVO = new LoginVO();
 
@@ -50,5 +48,9 @@ public class AuthService {
         loginVO.setToken(token);
 
         return loginVO;
+    }
+
+    public boolean hasUser(LoginDTO request) {
+        return userMapper.selectByUsername(request.getUsername()) != null;
     }
 }

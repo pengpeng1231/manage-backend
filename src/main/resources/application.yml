@@ -20,5 +20,5 @@ springdoc:
     path: /doc/index.html
 
 jwt:
-  secret: "12345"
+  secret: "JDu4x5vP8w2q1zR6hT9kYg3nB7cF2mE1sL4pX7iQ0oW5yV8uA9jM2dC3fN6"
   expiration.ms: 86400000 # 24小时
