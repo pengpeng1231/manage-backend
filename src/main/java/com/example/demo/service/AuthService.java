@@ -3,21 +3,20 @@ package com.example.demo.service;
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.UserMapper;
-import com.example.demo.utils.JwtUtils;
 import com.example.demo.utils.PasswordEncoder;
-import com.example.demo.vo.LoginVO;
+import com.example.demo.vo.UserVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
-    private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
-
-    public AuthService(UserMapper userMapper, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
-        this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserService userService;
 
     public void register(LoginDTO request) {
         if (userMapper.selectByUsername(request.getUsername()) != null) {
@@ -30,8 +29,9 @@ public class AuthService {
         userMapper.insert(user); // MyBatis-Plus 的插入方法
     }
 
-    public LoginVO login(LoginDTO request) {
+    public UserVO login(LoginDTO request) {
         User user = userMapper.selectByUsername(request.getUsername());
+
         if (user == null) {
             throw new BadCredentialsException("用户名或密码错误");
         }
@@ -40,14 +40,13 @@ public class AuthService {
             throw new BadCredentialsException("用户名或密码错误");
         }
 
-        String token = JwtUtils.generateToken(user.getUsername());
+        UserVO userVO = new UserVO();
+        userVO.setUsername(user.getUsername());
+        userVO.setId(user.getId());
+        userVO.setEmail(user.getEmail());
+        userVO.setPhone(user.getPhone());
 
-        LoginVO loginVO = new LoginVO();
-
-        loginVO.setUsername(user.getUsername());
-        loginVO.setToken(token);
-
-        return loginVO;
+        return userVO;
     }
 
     public boolean hasUser(LoginDTO request) {

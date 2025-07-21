@@ -13,17 +13,12 @@ import java.util.Date;
 
 @Component
 public class JwtUtils {
-    @Value("${jwt.secret}")
-    private static String secret;
-
     @Value("${jwt.expiration.ms}")
-    private static long expirationMs;
+    public long expirationMs;
+    @Value("${jwt.secret}")
+    public String secret;
 
-    private static Key getSigningKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
-    }
-
-    public static boolean validateToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(getSigningKey())
@@ -35,7 +30,7 @@ public class JwtUtils {
         }
     }
 
-    public static String getUsernameFromToken(String token) {
+    public String getUsernameFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
@@ -44,12 +39,16 @@ public class JwtUtils {
                 .getSubject();
     }
 
-    public static String generateToken(String username) {
+    public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
 }

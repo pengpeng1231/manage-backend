@@ -22,7 +22,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // 禁用CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/register", "/api/login", "/doc/**", "/api/**").permitAll() // 允许匿名访问
+                        .requestMatchers("/api/register", "/api/login", "/api/checkAuth", "/doc/**", "/api/**").permitAll() // 允许匿名访问
                         .anyRequest().authenticated() // 其他接口需要认证
                 )
                 .httpBasic(AbstractHttpConfigurer::disable) // 禁用Basic认证
@@ -36,10 +36,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*")); // 允许所有来源，生产环境应指定具体域名
+        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // 允许所有来源，生产环境应指定具体域名
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 允许的HTTP方法
         configuration.setAllowedHeaders(List.of("*")); // 允许所有头
-        configuration.setAllowCredentials(false); // 不允许凭证，如果前端需要发送cookie等凭证信息，设为true
+        configuration.setAllowCredentials(true); // 不允许凭证，如果前端需要发送cookie等凭证信息，设为true
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // 对所有路径应用CORS配置
