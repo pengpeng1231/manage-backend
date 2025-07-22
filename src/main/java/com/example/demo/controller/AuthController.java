@@ -64,7 +64,7 @@ public class AuthController {
             return Result.error(2, "用户不存在，请注册!");
         }
 
-        return Result.ok(user, "验证通过!");
+        return Result.ok(user);
     }
 
     private void setCookie(HttpServletResponse response, String username) {
