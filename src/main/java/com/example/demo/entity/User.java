@@ -14,5 +14,6 @@ public class User extends Base {
     private String password;
     private String email;
     private String phone;
+    private String avatar;
     private Long deptId;
 }
