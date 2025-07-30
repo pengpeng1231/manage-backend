@@ -18,6 +18,7 @@ public class Menu extends Base {
     private String icon;
     private int status;
     private Long parentId;
+    private int sortNum;
     @TableField(exist = false)
     private List<Menu> children;
 }

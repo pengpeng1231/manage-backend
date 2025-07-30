@@ -42,6 +42,7 @@ create table menus
     icon        varchar(30) null,
     parent_id   bigint      null,
     status      tinyint     not null default 1,
+    sort_num    int         not null default 0,
     create_time bigint      null,
     update_time bigint      null,
     constraint FK_menus_parent_id

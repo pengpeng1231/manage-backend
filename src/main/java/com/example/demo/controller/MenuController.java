@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.dto.IdsDTO;
+import com.example.demo.dto.MenuQuery;
 import com.example.demo.entity.Menu;
 import com.example.demo.service.MenuService;
 import com.example.demo.utils.Result;
@@ -15,13 +16,18 @@ public class MenuController {
     @Autowired
     private MenuService menuService;
 
+    @GetMapping("/{id}")
+    public Result<Menu> getMenu(@PathVariable("id") Long id) {
+        return Result.ok(menuService.getMenu(id));
+    }
+
     @PostMapping()
-    public Result<Integer> createMenu(@RequestBody Menu menu) {
+    public Result<Long> createMenu(@RequestBody Menu menu) {
         return Result.ok(menuService.createMenu(menu));
     }
 
     @PutMapping()
-    public Result<Integer> editMenu(@RequestBody Menu menu) {
+    public Result<Long> editMenu(@RequestBody Menu menu) {
         return Result.ok(menuService.editMenu(menu));
     }
 
@@ -30,12 +36,14 @@ public class MenuController {
         return Result.ok(menuService.delMenu(idsDTO.getIds()));
     }
 
-    @GetMapping("/list")
-    public Result<IPage<Menu>> getMenus(@RequestParam int current, @RequestParam int pageSize) {
-        Page<Menu> page = new Page<>(current, pageSize);
+    @PostMapping("/list")
+    public Result<IPage<Menu>> getMenus(
+            @RequestBody MenuQuery menu
+    ) {
+        Page<Menu> page = new Page<>(menu.getCurrent(), menu.getPageSize());
 
-        page.setTotal(1);
-        page.setRecords(menuService.getMenuTree());
+        page.setRecords(menuService.getMenuTree(menu));
+        page.setTotal(menuService.getMenuTree(menu).size());
 
         return Result.ok(page);
     }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Result<Object>> handleBadCredentialsException(BadCredentialsException ex) {
+        return new ResponseEntity<>(Result.error(500, ex.getMessage()), HttpStatus.OK);
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<Result<Object>> handleSQLException(SQLException ex) {
         return new ResponseEntity<>(Result.error(500, ex.getMessage()), HttpStatus.OK);
     }
 }
