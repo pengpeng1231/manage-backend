@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.demo.dto.MenuQuery;
 import com.example.demo.entity.Menu;
 import com.example.demo.mapper.MenuMapper;
-import com.example.demo.utils.TreeBuildUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ public class MenuService {
         return menuMapper.selectById(id);
     }
 
-    public List<Menu> getMenuTree(MenuQuery menu) {
+    public List<Menu> getMenuAndParentList(MenuQuery menu) {
         LambdaQueryWrapper<Menu> queryWrapper = new LambdaQueryWrapper<>();
 
         queryWrapper.like(menu.getName() != null, Menu::getName, menu.getName());
@@ -35,7 +34,7 @@ public class MenuService {
             return List.of();
         }
 
-        return buildMenuTree(getMenusWithAllParents(menus));
+        return getMenusWithAllParents(menus);
     }
 
     public Long createMenu(Menu menu) {
@@ -50,15 +49,6 @@ public class MenuService {
 
     public int delMenu(List<Long> ids) {
         return menuMapper.deleteByIds(ids);
-    }
-
-    private List<Menu> buildMenuTree(List<Menu> menus) {
-        return TreeBuildUtils.build(menus,
-                Menu::getId,
-                Menu::getParentId,
-                Menu::getChildren,
-                Menu::setChildren
-        );
     }
 
     private List<Menu> getMenusWithAllParents(List<Menu> menus) {
