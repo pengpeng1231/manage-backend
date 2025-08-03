@@ -2,14 +2,18 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.service.AuthService;
+import com.example.demo.service.MenuService;
 import com.example.demo.service.UserService;
 import com.example.demo.utils.JwtUtils;
 import com.example.demo.utils.Result;
+import com.example.demo.vo.MenuVO;
 import com.example.demo.vo.UserVO;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -18,6 +22,8 @@ public class AuthController {
     private AuthService authService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private MenuService menuService;
     @Autowired
     private JwtUtils jwtUtils;
 
@@ -52,7 +58,7 @@ public class AuthController {
         return Result.ok(user, "登录成功");
     }
 
-    @PostMapping("/checkAuth")
+    @GetMapping("/checkAuth")
     public Result<UserVO> checkAuth(@CookieValue(name = "token", required = false) String token) {
         if (token == null || token.isEmpty()) {
             return Result.error(1, "请登录!");
@@ -65,6 +71,12 @@ public class AuthController {
         }
 
         return Result.ok(user);
+    }
+
+    @GetMapping("/getUserMenuList")
+    public Result<List<MenuVO>> getUserMenuList(@CookieValue(name = "token", required = false) String token) {
+        UserVO user = userService.authCheck(token);
+        return Result.ok(menuService.getUserMenus(user));
     }
 
     private void setCookie(HttpServletResponse response, String username) {

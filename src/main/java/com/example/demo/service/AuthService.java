@@ -15,6 +15,8 @@ public class AuthService {
     private UserMapper userMapper;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private MenuService menuService;
 
     public void register(LoginDTO request) {
         if (userMapper.selectByUsername(request.getUsername()) != null) {

@@ -4,8 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.demo.dto.MenuQuery;
 import com.example.demo.entity.Menu;
 import com.example.demo.mapper.MenuMapper;
+import com.example.demo.utils.TreeBuildUtils;
+import com.example.demo.vo.MenuVO;
+import com.example.demo.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,18 +41,30 @@ public class MenuService {
         return getMenusWithAllParents(menus);
     }
 
+    @Transactional
     public Long createMenu(Menu menu) {
         menuMapper.insert(menu);
         return menu.getId();
     }
 
+    @Transactional
     public Long editMenu(Menu menu) {
         menuMapper.updateById(menu);
         return menu.getId();
     }
 
+    @Transactional
     public int delMenu(List<Long> ids) {
         return menuMapper.deleteByIds(ids);
+    }
+
+    public List<MenuVO> getUserMenus(UserVO user) {
+        return TreeBuildUtils.build(menuMapper.selectMenuVOList(),
+                MenuVO::getId,
+                MenuVO::getParentId,
+                MenuVO::getChildren,
+                MenuVO::setChildren
+        );
     }
 
     private List<Menu> getMenusWithAllParents(List<Menu> menus) {

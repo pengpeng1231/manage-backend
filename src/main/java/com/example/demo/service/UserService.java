@@ -15,6 +15,8 @@ public class UserService {
     private UserMapper userMapper;
     @Autowired
     private JwtUtils jwtUtils;
+    @Autowired
+    private MenuService menuService;
 
     public UserVO getUserById(Long id) {
         User user = userMapper.selectById(id);
